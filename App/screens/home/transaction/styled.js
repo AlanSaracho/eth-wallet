@@ -2,10 +2,11 @@ import styled from 'styled-components';
 import colors from '../../../theme/colors';
 
 export const Container = styled.View`
-  padding-vertical: 8px;
+  padding-vertical: 16px;
   padding-horizontal: 16px;
   flex-direction: row;
   align-items: center;
+  background-color: ${colors.secondary};
 `;
 
 export const Arrow = styled.Text`

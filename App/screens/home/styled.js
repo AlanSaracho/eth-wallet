@@ -2,13 +2,11 @@ import styled from 'styled-components';
 import colors from '../../theme/colors';
 
 export const Container = styled.View`
-  background-color: ${colors.secondary};
+  background-color: ${colors.primary};
   flex: 1;
 `;
 
-export const HeaderContainer = styled.View`
-  background-color: ${colors.primary};
-`;
+export const HeaderContainer = styled.View``;
 
 export const HeaderInfoContainer = styled.View`
   padding-horizontal: 16px;

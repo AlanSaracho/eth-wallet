@@ -35,7 +35,7 @@ export const LoginContent = styled.View`
   left: 0;
   right: 0;
   bottom: 0;
-  top: 64;
+  top: 64px;
   background-color: ${colors.secondary};
   justify-content: space-between;
   align-items: center;

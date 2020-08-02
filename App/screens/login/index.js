@@ -1,6 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Dimensions, Animated, Keyboard} from 'react-native';
+import {SharedElement} from 'react-navigation-shared-element';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 import {toUpper} from 'lodash';
+import {WalletActions} from '../../store/wallet';
 import {SlashedView, LoadingLogo, Button} from '../../components';
 import {
   Container,
@@ -17,22 +21,33 @@ const screenSize = Dimensions.get('screen');
 const visibleLoginHeight = 160 + 64;
 
 const Login = () => {
+  const navigation = useNavigation();
   const initialPosition = screenSize.height - visibleLoginHeight;
-  const [loading, setLoading] = useState(true);
-  const [address, setAddress] = useState('');
+  const [showLoadingAnimation, setShowLoadingAnimation] = useState(true);
+  const {address, validatingAddress} = useSelector((state) => state.wallet);
+  const [loginAddress, setLoginAddress] = useState(address);
+  const loading = validatingAddress || showLoadingAnimation;
+
+  console.log(validatingAddress);
+
   const startLogin = () => {
     Keyboard.dismiss();
-    setLoading(true);
+    WalletActions.setAddress({address: loginAddress});
+    WalletActions.validateAddress();
   };
 
-  const progress = useRef(new Animated.Value(0)).current;
-
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2500);
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      setShowLoadingAnimation(true);
+      setTimeout(() => {
+        setShowLoadingAnimation(false);
+      }, 2500);
+    });
 
+    return unsubscribe;
+  }, [navigation]);
+
+  const progress = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(progress, {
       toValue: loading ? 0 : 1,
@@ -62,7 +77,9 @@ const Login = () => {
   return (
     <Container>
       <AnimatedLogoContainer style={{transform: [{scale}]}}>
-        <LoadingLogo loading={loading} />
+        <SharedElement id="logo">
+          <LoadingLogo loading={loading} tintColor="white" />
+        </SharedElement>
       </AnimatedLogoContainer>
       <AnimatedLoginContainer style={{transform: [{translateY}]}}>
         <SlashedView />
@@ -71,7 +88,7 @@ const Login = () => {
           <Input
             placeholder="Type your wallet"
             placeholderTextColor="#FFFFFF66"
-            onChangeText={(newAddress) => setAddress(toUpper(newAddress))}
+            onChangeText={(newAddress) => setLoginAddress(toUpper(newAddress))}
           />
           <Button onPress={startLogin}>go</Button>
           <View />

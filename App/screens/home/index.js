@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {View, FlatList, Animated} from 'react-native';
+import {SharedElement} from 'react-navigation-shared-element';
 import {toUpper} from 'lodash';
 import {SlashedView, LoadingLogo} from '../../components';
 import Transaction from './transaction';
@@ -50,19 +51,18 @@ const Home = () => {
           [{nativeEvent: {contentOffset: {y: offset}}}],
           {useNativeDriver: true},
         )}
-        ItemSeparatorComponent={() => <View style={{height: 16}} />}
-        ListFooterComponent={<SlashedView color={colors.primary} />}
-        style={{backgroundColor: colors.secondary}}
+        ListFooterComponent={<SlashedView color={colors.secondary} inverted />}
         ListHeaderComponent={
           <HeaderContainer>
             <AnimatedHeaderInfoContainer
               style={{opacity, transform: [{scale}, {translateY: offset}]}}>
-              <LoadingLogo tintColor={colors.paper} size={42} />
+              <SharedElement id="logo">
+                <LoadingLogo tintColor={colors.paper} size={42} />
+              </SharedElement>
               <Balance>{balance}</Balance>
               <WalletName>{toUpper(wallet)}</WalletName>
             </AnimatedHeaderInfoContainer>
             <SlashedView />
-            <View style={{height: 16, backgroundColor: colors.secondary}} />
           </HeaderContainer>
         }
         renderItem={({item}) => <Transaction />}
