@@ -8,23 +8,36 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   slash: {
-    transform: [{rotate: '-7deg'}, {scaleX: 1.5}, {translateY: 32}],
-    height: 64,
+    transform: [],
   },
 });
 
-const SlashedView = ({color}) => (
-  <View style={styles.container}>
-    <View style={[styles.slash, {backgroundColor: color}]} />
-  </View>
-);
+const SlashedView = ({color, inverted}) => {
+  const rotate = inverted ? '-187deg' : '-7deg';
+  return (
+    <View style={styles.container}>
+      <View
+        style={[
+          // eslint-disable-next-line react-native/no-inline-styles
+          {
+            height: 64,
+            backgroundColor: color,
+            transform: [{rotate}, {scaleX: 1.5}, {translateY: 32}],
+          },
+        ]}
+      />
+    </View>
+  );
+};
 
 SlashedView.defaultProps = {
   color: colors.secondary,
+  inverted: false,
 };
 
 SlashedView.propTypes = {
   color: PropTypes.string,
+  inverted: PropTypes.bool,
 };
 
 export default SlashedView;
