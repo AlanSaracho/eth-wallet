@@ -1,13 +1,21 @@
-import {combineReducers} from 'redux';
+import {applyMiddleware} from 'redux';
 import {createStore as createChilloutStore} from 'redux-chillout';
-import session from './session';
+import createSagaMiddleware from 'redux-saga';
+
+import rootSaga from './rootSaga';
+import rootReducer from './rootReducer';
 
 const createStore = () => {
-  const rootReducer = combineReducers({
-    session,
-  });
+  const sagaMiddleware = createSagaMiddleware();
 
-  return createChilloutStore(rootReducer);
+  const store = createChilloutStore(
+    rootReducer,
+    applyMiddleware(sagaMiddleware),
+  );
+
+  sagaMiddleware.run(rootSaga);
+
+  return store;
 };
 
 export {createStore};

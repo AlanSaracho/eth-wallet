@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import {StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
@@ -7,10 +7,10 @@ import Screens from './screens';
 import colors from './theme/colors';
 
 const store = createStore();
-console.log({store});
+const navigation = createRef();
 
 const App = () => (
-  <NavigationContainer>
+  <NavigationContainer ref={navigation}>
     <Provider store={store}>
       <Screens />
     </Provider>
@@ -19,3 +19,4 @@ const App = () => (
 );
 
 export default App;
+export {navigation};
