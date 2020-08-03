@@ -1,16 +1,21 @@
 import React, {useEffect, useRef} from 'react';
-import {View, FlatList, Animated} from 'react-native';
+import {FlatList, Animated} from 'react-native';
+import {useSelector} from 'react-redux';
 import {SharedElement} from 'react-navigation-shared-element';
 import {toUpper} from 'lodash';
-import {SlashedView, LoadingLogo} from '../../components';
+import EthVal from 'ethval';
+import {SlashedView, LoadingLogo, Loader} from '../../components';
 import Transaction from './transaction';
 import colors from '../../theme/colors';
+import {WalletActions} from '../../store/wallet';
 import {
   Container,
   HeaderContainer,
   HeaderInfoContainer,
   WalletName,
   Balance,
+  LoaderContainer,
+  NoTransactions,
 } from './styled';
 
 const AnimatedHeaderInfoContainer = Animated.createAnimatedComponent(
@@ -19,11 +24,16 @@ const AnimatedHeaderInfoContainer = Animated.createAnimatedComponent(
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const Home = () => {
-  const balance = '1000 RSK';
-  const wallet = '0x34B348F0E';
+  const {address, balance, transactions, loadingTransactions} = useSelector(
+    (state) => state.wallet,
+  );
+  const ethBalance = new EthVal(balance).toEth().toFixed(2);
   const offset = useRef(new Animated.Value(0)).current;
 
-  const reloadTransactions = () => {};
+  const reloadTransactions = () => {
+    WalletActions.getBalance();
+    WalletActions.getTransactions();
+  };
 
   const maxOffset = 250;
 
@@ -46,12 +56,15 @@ const Home = () => {
   return (
     <Container>
       <AnimatedFlatList
-        data={[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}
+        data={loadingTransactions ? [] : transactions}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {y: offset}}}],
           {useNativeDriver: true},
         )}
         ListFooterComponent={<SlashedView color={colors.secondary} inverted />}
+        onRefresh={() => reloadTransactions()}
+        refreshing={false}
+        keyExtractor={(item) => `${item.hash}`}
         ListHeaderComponent={
           <HeaderContainer>
             <AnimatedHeaderInfoContainer
@@ -59,13 +72,22 @@ const Home = () => {
               <SharedElement id="logo">
                 <LoadingLogo tintColor={colors.paper} size={42} />
               </SharedElement>
-              <Balance>{balance}</Balance>
-              <WalletName>{toUpper(wallet)}</WalletName>
+              <Balance>{`${ethBalance} ETH`}</Balance>
+              <WalletName>{toUpper(address)}</WalletName>
             </AnimatedHeaderInfoContainer>
             <SlashedView />
           </HeaderContainer>
         }
-        renderItem={({item}) => <Transaction />}
+        ListEmptyComponent={() => (
+          <LoaderContainer>
+            {loadingTransactions ? (
+              <Loader />
+            ) : (
+              <NoTransactions>=(</NoTransactions>
+            )}
+          </LoaderContainer>
+        )}
+        renderItem={({item: transaction}) => <Transaction {...transaction} />}
       />
     </Container>
   );

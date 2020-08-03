@@ -39,11 +39,13 @@ export const RightColumn = styled.View`
   align-items: flex-end;
   margin-right: 16px;
 `;
+
 export const Amount = styled.Text`
   color: ${colors.paper};
   font-size: 14px;
   font-family: 'SourceCodePro-Black';
   font-size: 20px;
+  text-align: right;
 `;
 
 export const Date = styled.Text`

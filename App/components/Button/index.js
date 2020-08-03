@@ -14,10 +14,13 @@ const styles = {
   },
 };
 
-const Button = ({onPress, children, style}) => {
+const Button = ({onPress, children, style, disabled}) => {
+  const opacity = disabled ? 0.5 : 1;
   return (
-    <TouchableHighlight onPress={onPress} style={[styles.container, style]}>
-      <Text style={styles.text}>{children}</Text>
+    <TouchableHighlight
+      onPress={() => !disabled && onPress()}
+      style={[styles.container, style]}>
+      <Text style={[styles.text, {opacity}]}>{children}</Text>
     </TouchableHighlight>
   );
 };

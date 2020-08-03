@@ -6,9 +6,13 @@ import {
 } from '../../services/wallet';
 import {WalletTypes, WalletActions} from './index';
 import {navigation} from '../..';
+import {etherscanProvider} from '../../api';
 
 function* validateAddress() {
   WalletActions.setValidatingAddress(true);
+  WalletActions.setTransactions([]);
+  WalletActions.setBalance(0);
+  // only for animation fun :3
   yield delay(1500);
   WalletActions.setValidatingAddress(false);
   navigation.current.navigate('Home');
@@ -41,8 +45,21 @@ function* getTransactions() {
   }
 }
 
+function* getEtherPrice() {
+  WalletActions.setLoadingEtherPrice(true);
+  try {
+    const etherPrice = yield call(etherscanProvider.getEtherPrice);
+    WalletActions.setEtherPrice(etherPrice);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    WalletActions.setLoadingEtherPrice(false);
+  }
+}
+
 export default [
   takeLatest(WalletTypes.VALIDATE_ADDRESS, validateAddress),
   takeLatest(WalletTypes.GET_BALANCE, getBalance),
   takeLatest(WalletTypes.GET_TRANSACTIONS, getTransactions),
+  takeLatest(WalletTypes.GET_ETHER_PRICE, getEtherPrice),
 ];

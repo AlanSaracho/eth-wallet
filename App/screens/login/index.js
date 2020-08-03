@@ -3,15 +3,19 @@ import {View, Dimensions, Animated, Keyboard} from 'react-native';
 import {SharedElement} from 'react-navigation-shared-element';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {toUpper} from 'lodash';
+import {toUpper, toLower} from 'lodash';
+import ethers from 'ethers';
+
 import {WalletActions} from '../../store/wallet';
 import {SlashedView, LoadingLogo, Button} from '../../components';
+import {timeout} from '../../utils';
 import {
   Container,
   LogoContainer,
   LoginContainer,
   Input,
   LoginContent,
+  InvalidAddress,
 } from './styled';
 
 const AnimatedLoginContainer = Animated.createAnimatedComponent(LoginContainer);
@@ -26,22 +30,20 @@ const Login = () => {
   const [showLoadingAnimation, setShowLoadingAnimation] = useState(true);
   const {address, validatingAddress} = useSelector((state) => state.wallet);
   const [loginAddress, setLoginAddress] = useState(address);
-  const loading = validatingAddress || showLoadingAnimation;
-
-  console.log(validatingAddress);
+  const loading = showLoadingAnimation || validatingAddress;
+  const validAddress = ethers.utils.isAddress(toLower(loginAddress));
 
   const startLogin = () => {
     Keyboard.dismiss();
-    WalletActions.setAddress({address: loginAddress});
+    WalletActions.setAddress(toLower(loginAddress));
     WalletActions.validateAddress();
   };
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
       setShowLoadingAnimation(true);
-      setTimeout(() => {
-        setShowLoadingAnimation(false);
-      }, 2500);
+      await timeout(2500);
+      setShowLoadingAnimation(false);
     });
 
     return unsubscribe;
@@ -74,6 +76,8 @@ const Login = () => {
     extrapolate: 'clamp',
   });
 
+  const errorMessageStyle = {opacity: validAddress ? 0 : 1};
+
   return (
     <Container>
       <AnimatedLogoContainer style={{transform: [{scale}]}}>
@@ -85,12 +89,22 @@ const Login = () => {
         <SlashedView />
         <LoginContent>
           <LoadingLogo tintColor="white" size={32} style={{opacity}} />
-          <Input
-            placeholder="Type your wallet"
-            placeholderTextColor="#FFFFFF66"
-            onChangeText={(newAddress) => setLoginAddress(toUpper(newAddress))}
-          />
-          <Button onPress={startLogin}>go</Button>
+          <View>
+            <Input
+              placeholder="Type your wallet"
+              placeholderTextColor="#FFFFFF66"
+              onChangeText={(newAddress) =>
+                setLoginAddress(toUpper(newAddress))
+              }
+              value={loginAddress}
+            />
+            <InvalidAddress style={errorMessageStyle}>
+              Please, enter a valid address
+            </InvalidAddress>
+          </View>
+          <Button onPress={startLogin} disabled={!validAddress}>
+            go
+          </Button>
           <View />
         </LoginContent>
       </AnimatedLoginContainer>

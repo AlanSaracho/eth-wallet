@@ -31,3 +31,16 @@ export const WalletName = styled.Text`
   font-family: 'SourceCodePro-Regular';
   margin-top: 4px;
 `;
+
+export const LoaderContainer = styled.View`
+  padding-vertical: 30%;
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.secondary};
+`;
+
+export const NoTransactions = styled.Text`
+  text-align: center;
+  color: ${colors.paper};
+  font-size: 32px;
+`;

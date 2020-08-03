@@ -14,9 +14,14 @@ const [WalletActions, reducer, WalletTypes] = generateChillout(
     setLoadingTransactions: ['loadingTransactions'],
     getTransactions: null,
     setTransactions: ['transactions'],
+
+    setLoadingEtherPrice: ['loadingEtherPrice'],
+    getEtherPrice: null,
+    setEtherPrice: ['etherPrice'],
   },
   {
     address: Config.DEFAULT_WALLET,
+    balance: 0,
   },
 );
 

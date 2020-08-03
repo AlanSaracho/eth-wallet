@@ -51,3 +51,12 @@ export const Input = styled.TextInput`
   border-bottom-color: white;
   font-family: 'SourceCodePro-Regular';
 `;
+
+export const InvalidAddress = styled.Text`
+  align-self: center;
+  color: red;
+  font-size: 14px;
+  margin-top: 8px;
+  opacity: 0;
+  font-family: 'SourceCodePro-Regular';
+`;
