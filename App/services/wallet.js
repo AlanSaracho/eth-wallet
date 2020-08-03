@@ -17,8 +17,7 @@ export const getAddressTransactions = async (address) => {
   return reverse(transactions);
 };
 
-export const getEtherPrice = async () => {
+export const getEtherUsdPrice = async () => {
   const price = await etherscanProvider.getEtherPrice();
-  console.log({price});
   return price;
 };

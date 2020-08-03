@@ -3132,6 +3132,11 @@ cssstyle@^2.2.0:
   dependencies:
     cssom "~0.3.6"
 
+currency.js@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/currency.js/-/currency.js-2.0.2.tgz#c8d1ebcaa54d6a28fb915129065a0300b1ea544a"
+  integrity sha512-pJ13mxetpygEFKiPdXN2OZxxWtTJXKBj7sLaUUTPKl4Z9UdUnus8MJXfL5BniJdspwvZ3s0GA+YMq8rB/13d+g==
+
 d@1, d@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/d/-/d-1.0.1.tgz#8698095372d58dbee346ffd0c7093f99f8f9eb5a"

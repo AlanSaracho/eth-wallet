@@ -3,10 +3,10 @@ import {
   getAddressBalance,
   getAddressTransactions,
   getLastBlock,
+  getEtherUsdPrice,
 } from '../../services/wallet';
 import {WalletTypes, WalletActions} from './index';
 import {navigation} from '../..';
-import {etherscanProvider} from '../../api';
 
 function* validateAddress() {
   WalletActions.setValidatingAddress(true);
@@ -48,7 +48,7 @@ function* getTransactions() {
 function* getEtherPrice() {
   WalletActions.setLoadingEtherPrice(true);
   try {
-    const etherPrice = yield call(etherscanProvider.getEtherPrice);
+    const etherPrice = yield call(getEtherUsdPrice);
     WalletActions.setEtherPrice(etherPrice);
   } catch (e) {
     console.error(e);

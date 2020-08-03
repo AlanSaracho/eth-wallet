@@ -22,6 +22,7 @@ const [WalletActions, reducer, WalletTypes] = generateChillout(
   {
     address: Config.DEFAULT_WALLET,
     balance: 0,
+    etherPrice: 0,
   },
 );
 

@@ -1,53 +1,26 @@
 import React, {useEffect, useRef} from 'react';
 import {FlatList, Animated} from 'react-native';
 import {useSelector} from 'react-redux';
-import {SharedElement} from 'react-navigation-shared-element';
-import {toUpper} from 'lodash';
-import EthVal from 'ethval';
-import {SlashedView, LoadingLogo, Loader} from '../../components';
+import {SlashedView, Loader} from '../../components';
 import Transaction from './transaction';
+import Header from './header';
 import colors from '../../theme/colors';
 import {WalletActions} from '../../store/wallet';
-import {
-  Container,
-  HeaderContainer,
-  HeaderInfoContainer,
-  WalletName,
-  Balance,
-  LoaderContainer,
-  NoTransactions,
-} from './styled';
+import {Container, LoaderContainer, NoTransactions} from './styled';
 
-const AnimatedHeaderInfoContainer = Animated.createAnimatedComponent(
-  HeaderInfoContainer,
-);
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const Home = () => {
-  const {address, balance, transactions, loadingTransactions} = useSelector(
+  const {transactions, loadingTransactions} = useSelector(
     (state) => state.wallet,
   );
-  const ethBalance = new EthVal(balance).toEth().toFixed(2);
   const offset = useRef(new Animated.Value(0)).current;
 
   const reloadTransactions = () => {
     WalletActions.getBalance();
     WalletActions.getTransactions();
+    WalletActions.getEtherPrice();
   };
-
-  const maxOffset = 250;
-
-  const opacity = offset.interpolate({
-    inputRange: [0, maxOffset],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
-
-  const scale = offset.interpolate({
-    inputRange: [0, maxOffset],
-    outputRange: [1, 0.5],
-    extrapolate: 'clamp',
-  });
 
   useEffect(() => {
     reloadTransactions();
@@ -65,19 +38,7 @@ const Home = () => {
         onRefresh={() => reloadTransactions()}
         refreshing={false}
         keyExtractor={(item) => `${item.hash}`}
-        ListHeaderComponent={
-          <HeaderContainer>
-            <AnimatedHeaderInfoContainer
-              style={{opacity, transform: [{scale}, {translateY: offset}]}}>
-              <SharedElement id="logo">
-                <LoadingLogo tintColor={colors.paper} size={42} />
-              </SharedElement>
-              <Balance>{`${ethBalance} ETH`}</Balance>
-              <WalletName>{toUpper(address)}</WalletName>
-            </AnimatedHeaderInfoContainer>
-            <SlashedView />
-          </HeaderContainer>
-        }
+        ListHeaderComponent={<Header offset={offset} />}
         ListEmptyComponent={() => (
           <LoaderContainer>
             {loadingTransactions ? (
