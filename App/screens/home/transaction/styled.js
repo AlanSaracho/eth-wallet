@@ -26,7 +26,7 @@ export const OperationType = styled.Text`
   color: ${colors.paper};
   font-family: 'SourceCodePro-Bold';
 `;
-export const Address = styled.Text`
+export const Hash = styled.Text`
   color: ${colors.paper};
   font-size: 14px;
   font-family: 'SourceCodePro-SemiBold';

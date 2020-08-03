@@ -8,14 +8,14 @@ import {
   Container,
   Arrow,
   CenterColumn,
-  Address,
+  Hash,
   OperationType,
   RightColumn,
   Amount,
   Date,
 } from './styled';
 
-const Transaction = ({value, timestamp, from, to}) => {
+const Transaction = ({value, timestamp, from, to, hash}) => {
   const address = useSelector((state) => state.wallet.address);
   const isDeposit = toUpper(from) === toUpper(address);
   const color = isDeposit ? colors.primary : colors.paper;
@@ -30,7 +30,7 @@ const Transaction = ({value, timestamp, from, to}) => {
           style={{color}}
           children={isDeposit ? 'Deposit' : 'Transfer'}
         />
-        <Address children={isDeposit ? from : to} />
+        <Hash children={hash} />
       </CenterColumn>
       <RightColumn>
         <Amount children={`${ethValue} ETH`} />
