@@ -17,7 +17,7 @@
     "currency.js": "^2.0.2",
     "ethers": "^5.0.7",
     "ethval": "^2.1.1",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "node-libs-browser": "^2.2.1",
     "react": "16.13.1",
     "react-native": "0.63.2",
